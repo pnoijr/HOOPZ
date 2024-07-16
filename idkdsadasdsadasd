@@ -1,0 +1,668 @@
+
+
+
+-- Load the Neverlose library
+local Neverlose_Main = loadstring(game:HttpGet("https://raw.githubusercontent.com/Mana42138/Neverlose-UI/main/Source.lua"))()
+
+-- Create a new window
+local Win = Neverlose_Main:Window({
+    Title = "SELFMADE",
+    CFG = "Neverlose",
+    Key = Enum.KeyCode.H,
+    External = {
+        KeySystem = false,
+        Key = {
+            "Test",
+            "Beta"
+        }
+    }
+})
+
+-- Create tabs and sections
+local TabSection1 = Win:TSection("Misc")
+local Autofarm = TabSection1:Tab("Main")
+local camlock = Autofarm:Section("Camlock")
+local auto = Autofarm:Section("Auto")
+local mag = Autofarm:Section("Mag/Reach")
+local anti = Autofarm:Section("anti")
+local playermod = Autofarm:Section("playermod")
+local rage = Autofarm:Section("rage")
+
+
+camlock:Button("Camlock", function()
+    Neverlose_Main:Notify({
+    Title = "Camlock",
+    Text = "camlock is on",
+    Time = 2 -- in seconds
+    })
+ -- Get the Workspace service
+local workspace = game:GetService("Workspace")
+
+-- Get the Buildings folder in the Workspace
+local buildingsFolder = workspace.Map:WaitForChild("Buildings")
+
+-- Function to delete all buildings
+local function deleteBuildings()
+    -- Iterate through each child in the Buildings folder
+    for _, building in pairs(buildingsFolder:GetChildren()) do
+        -- Delete the building
+        building:Destroy()
+    end
+end
+
+-- Call the function to delete buildings (you can trigger this in your game as needed)
+deleteBuildings()
+
+local rs = game:GetService('RunService')
+local plrs = game:GetService('Players')
+local plr = plrs.LocalPlayer
+local uis = game:GetService("UserInputService")
+local Camera = game:GetService('Workspace').CurrentCamera
+local character = plr.Character 
+local head = character.Head
+local torso = character.Torso
+_G.GG = nil 
+isdoing = false
+
+--FUNCTIONS
+
+
+--|| Find goal and parent them to our workspace
+local function GetGoal() 
+    for i,v in pairs(workspace:GetDescendants()) do
+        if v.Name == "Swish" then
+            v.Parent.Name = 'kkk'
+            v.Parent.Parent = workspace
+        end
+    end
+end 
+
+local function GetClosestGoal()
+    local distance,goal = 9e9, nil
+    for i,v in pairs(game:GetService('Workspace'):GetChildren()) do
+        if v.Name == "kkk" then
+            local magnitude = (plr.Character.Torso.Position - v.Position).Magnitude
+            if distance > magnitude then
+                distance = magnitude; goal = v
+            end
+        end
+    end
+    return goal, distance
+end
+
+
+function calculateVector()
+    local goal, distance = GetClosestGoal()
+    local power = tonumber(game:GetService("Players").LocalPlayer.Power.Value)
+    local vector = nil
+
+    if distance > 60 and distance < 63 then
+        if power == 75 then
+            vector = Vector3.new(0, 50, 0)
+        elseif power == 80 then
+            vector = Vector3.new(0, 70, 0)
+        elseif power == 85 then
+            vector = Vector3.new(0, 85, 0)
+        end
+    elseif distance > 63 and distance < 68 then
+        if power == 80 then
+            vector = Vector3.new(0, 55, 0)
+        elseif power == 85 then
+            vector = Vector3.new(0, 80, 0)
+        end
+    elseif distance > 68 and distance < 73 then
+        if power == 85 then
+            vector = Vector3.new(0, 65, 0)
+        end
+    -- Add more conditions here as needed
+    elseif distance > 55 and distance < 61 then
+        if power == 85 then
+            vector = Vector3.new(0, 96, 0)
+        end
+    -- Add more conditions here as needed
+    elseif distance > 48 and distance < 50 then
+        if power == 85 then
+            vector = Vector3.new(0, 101, 0)
+        end
+    elseif distance > 42 and distance < 47 then
+         if power == 85 then
+            vector = Vector3.new(0, 102, 0)
+        end
+    elseif distance > 35 and distance < 41 then
+        if power == 85 then
+            vector = Vector3.new(0, 103, 0)
+        end
+    elseif distance > 30 and distance < 37 then
+        if power == 85 then
+            vector = Vector3.new(0, 104, 0)
+        end
+         elseif distance > 29 and distance < 36 then
+        if power == 85 then
+            vector = Vector3.new(0, 105, 0)
+        end
+    elseif distance > 25 and distance < 29 then
+        if power == 85 then
+            vector = Vector3.new(0, 107, 0)
+        end
+    end
+    return vector
+end
+--|| CAMLOCK
+local function initialize()
+    while wait() do 
+        if isdoing == true and character:WaitForChild("Humanoid").Jumping and torso.Velocity.Y >= 10 then 
+            local goal = GetClosestGoal()
+            local position = goal.Position 
+            local magnitude = (character.PrimaryPart.Position - goal.Position).magnitude
+            local cameraCFrame = CFrame.new(head.Position, position + calculateVector())
+            Camera.CFrame = cameraCFrame
+        end 
+    end 
+end
+
+
+--concatenate
+GetGoal()
+character:WaitForChild("Humanoid").Jumping:Connect(function()
+    _G.GG = GetClosestGoal()
+    if character:FindFirstChild('Basketball') then
+        isdoing = true
+        initialize()
+    end
+end)
+
+--zvz
+uis.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then 
+        isdoing = false
+    end
+end)
+
+end)
+
+
+
+
+
+
+
+--rage
+rage:Button("teleport to ball", function()
+    Neverlose_Main:Notify({
+    Title = "selfmade",
+    Text = "Press n to teleport to ball ",
+    Time = 2 -- in seconds
+    })
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local Workspace = game:GetService("Workspace")
+local player = Players.LocalPlayer
+local character = player.Character
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+local function getBalls()
+    local balls = {}
+    for _, object in ipairs(Workspace:GetDescendants()) do
+        if object:IsA("BasePart") and object.Name == "Ball" and object.Parent then
+            table.insert(balls, object)
+        end
+    end
+    return balls
+end
+
+local originalPosition = nil
+local hasBasketball = false
+
+local function teleportToNearestBall()
+    local balls = getBalls()
+    local closestBall = nil
+    local shortestDistance = math.huge
+
+    for _, ball in ipairs(balls) do
+        local distance = (humanoidRootPart.Position - ball.Position).Magnitude
+        if distance < shortestDistance then
+            closestBall = ball
+            shortestDistance = distance
+        end
+    end
+
+    if closestBall then
+        humanoidRootPart.CFrame = CFrame.new(closestBall.Position)
+    else
+        print("No balls found")
+    end
+end
+
+local function teleportBackToOriginalPosition()
+    if originalPosition then
+        humanoidRootPart.CFrame = CFrame.new(originalPosition)
+    else
+        print("No original position found")
+    end
+end
+
+UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
+    if not gameProcessedEvent then
+        if input.KeyCode == Enum.KeyCode.N then
+            originalPosition = humanoidRootPart.Position
+
+            if hasBasketball then
+                teleportBackToOriginalPosition()
+                hasBasketball = false
+            else
+                teleportToNearestBall()
+                hasBasketball = true
+            end
+        end
+    end
+end)
+
+-- The following code block is from your previous message
+character:WaitForChild("Humanoid").Jumping:Connect(function()
+    _G.GG = GetClosestGoal()
+    if character:FindFirstChild('Basketball') then
+        isdoing = true
+        initialize()
+    end
+end)
+
+end)
+
+
+
+
+
+
+
+auto:Button("Auto handels", function()
+    Neverlose_Main:Notify({
+    Title = "auto handels",
+    Text = "auto handels is now on",
+    Time = 2 -- in seconds
+    })
+local Players = game:GetService("Players")
+local Client = Players.LocalPlayer
+local VirtualInputManager = game:GetService("VirtualInputManager")
+
+local AutoDribble = {
+    Enabled = true,
+    LastUse = 0,
+    Combination = "Switch hands"
+}
+
+function AutoDribble:GetClosestPlayer()
+    local ClosestDistance = math.huge
+    local ClosestPlayer = nil
+
+    for _, Player in ipairs(Players:GetPlayers()) do
+        if Player == Client then continue end
+        local Root = Player.Character and Player.Character.PrimaryPart
+        if Root then
+            local MyRoot = Client.Character and Client.Character.PrimaryPart
+            if MyRoot then
+                local Distance = (MyRoot.Position - Root.Position).Magnitude
+                if Distance < ClosestDistance then
+                    ClosestDistance = Distance
+                    ClosestPlayer = Player
+                end
+            end
+        end
+    end
+
+    return ClosestPlayer
+end
+
+function AutoDribble:GetClosestPartToBall()
+    local Player = self:GetClosestPlayer()
+    if Player then
+        local Character = Client.Character
+        local Basketball = Character and Character:FindFirstChild("Basketball")
+
+        if Basketball then
+            local Ball = Basketball:FindFirstChild("Ball")
+
+            local ClosestPartLeftArmDistance = math.huge
+            local ClosestPartLeftArm
+
+            local ClosestPartRightArmDistance = math.huge
+            local ClosestPartRightArm
+
+            if Player.Character then
+                for _, Part in ipairs(Player.Character:GetChildren()) do
+                    if Part:IsA("BasePart") then
+                        local G = (Part.Position - Character:FindFirstChild("Right Arm").Position).Magnitude
+                        if G < ClosestPartRightArmDistance then
+                            ClosestPartRightArmDistance = G
+                            ClosestPartRightArm = Part
+                        end
+                    end
+                end
+
+                for _, Part in ipairs(Player.Character:GetChildren()) do
+                    if Part:IsA("BasePart") then
+                        local G = (Part.Position - Character:FindFirstChild("Left Arm").Position).Magnitude
+                        if G < ClosestPartRightArmDistance then
+                            ClosestPartLeftArmDistance = G
+                            ClosestPartLeftArm = Part
+                        end
+                    end
+                end
+
+                if ClosestPartRightArmDistance < ClosestPartLeftArmDistance then
+                    return "left"
+                else
+                    return "right"
+                end
+            end
+        end
+    end
+end
+
+function AutoDribble:GetEquippedBall()
+    local Character = Client.Character
+    local Basketball = Character and Character:FindFirstChild("Basketball")
+    local LeftArmDistance = math.huge
+    local RightArmDistance = math.huge
+
+    local LeftArm, RightArm, Ball = Character and Character:FindFirstChild("Left Arm"), Character and Character:FindFirstChild("Right Arm"), Basketball and Basketball:FindFirstChild("Ball")
+
+    if LeftArm and RightArm and Ball then
+        LeftArmDistance = (Ball.Position - LeftArm.Position).Magnitude
+        RightArmDistance = (Ball.Position - RightArm.Position).Magnitude
+
+        return LeftArmDistance < RightArmDistance and "Left" or "Right"
+    end
+end
+
+game:GetService("RunService").RenderStepped:Connect(function()
+    if AutoDribble.Enabled and (tick() - AutoDribble.LastUse) >= 0.5 then
+        local Side = AutoDribble:GetClosestPartToBall()
+        local g = Client.Character and Client.Character:FindFirstChild("Basketball") and Client.Character:FindFirstChild("Basketball"):FindFirstChild("Ball")
+        local Ye = Client.Character and Client.Character:FindFirstChild("Left Arm")
+        local Ye2 = Client.Character and Client.Character:FindFirstChild("Right Arm")
+
+        if Side == "left" and AutoDribble:GetEquippedBall() == "Right" or Side == "right" and AutoDribble:GetEquippedBall() == "Left" then
+            local Key = "H"
+            VirtualInputManager:SendKeyEvent(true, Key, false, game)
+            task.wait()
+            VirtualInputManager:SendKeyEvent(false, Key, false, game)
+
+            AutoDribble.LastUse = tick()
+        end
+
+        if not Client.Character or not Client.Character:FindFirstChild("Basketball") then
+            AutoDribble.LastSide = ""
+        end
+    end
+end)
+end)
+
+auto:Button("Auto Guard", function()
+    Neverlose_Main:Notify({
+    Title = "selfmade",
+    Text = "Auto Guard Is Now On Press x",
+    Time = 2 -- in seconds
+    })
+local tr = false
+local Mouse = game.Players.LocalPlayer:GetMouse()
+
+game:GetService("UserInputService").InputBegan:Connect(function(key, gpe)
+   if key.KeyCode == Enum.KeyCode.X and not gpe and tr == false then
+           tr = true
+           for i, v in pairs(game.Players:GetPlayers()) do
+               local char = game.Players.LocalPlayer.Character
+               if v.Name ~= char.Name and (v.Character.Torso.CFrame.p - char.Torso.CFrame.p).Magnitude < 25 then
+                   while tr == true do
+                       if v.Character.Torso.Velocity.magnitude > 0.5 and v.Character:FindFirstChild("Basketball") then
+                           char.Humanoid:MoveTo(v.Character.Torso.CFrame.p + v.Character.Torso.Velocity.unit * 7)
+                       elseif v.Character.Torso.Velocity.magnitude < 0.5 and v.Character:FindFirstChild("Basketball") then
+                           char.Humanoid:MoveTo(v.Character.Torso.CFrame.p)
+                       elseif not v.Character:FindFirstChild("Basketball") then
+                           tr = false
+                       end
+                        task.wait()
+                   end
+               end
+           end
+       elseif key.KeyCode == Enum.KeyCode.X and not gpe and tr == true then
+           tr = false
+       end
+   end
+)
+
+end)
+
+auto:Button("Auto Dunk", function()
+    Neverlose_Main:Notify({
+    Title = "Selfmade",
+    Text = "Auto Dunk Is Now On",
+    Time = 2 -- in seconds
+    })
+ _G.autoDunk = true
+
+function getCourt()
+    local closestDistance = math.huge
+    local closestCourt = nil
+    for i,v in pairs(game:GetService("Workspace").Courts:GetDescendants()) do
+        if v.Name == "CourtFloor" then
+            local distance = (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - v.Position).magnitude
+            if distance < closestDistance then
+                closestDistance = distance
+                closestCourt = v
+            end
+        end
+    end
+    return closestCourt.Parent.Parent.Parent
+end
+
+function getClosest()
+    local closestDistance = math.huge
+    local closestRim = nil
+    for i,v in pairs(game:GetService("Workspace").Courts:GetDescendants()) do
+        if v.Name == "hoop" then
+            local distance = (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - v.Position).magnitude
+            if distance < closestDistance then
+                closestDistance = distance
+                closestRim = v
+            end
+        end
+    end
+    return closestRim
+end
+
+function returnDunkDistance()
+    local dunkDistance = (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - getClosest().Position).magnitude
+    return dunkDistance
+end
+
+spawn(function()
+    while _G.autoDunk do
+        wait()
+        if returnDunkDistance() <= 56 then
+            local args = {
+                [1] = game:GetService("Players").LocalPlayer.Character:WaitForChild("Basketball")
+            }
+
+            getCourt().FieldGoal.dunkFunction:InvokeServer(unpack(args))
+            if _G.autoDunk == false then return end
+        end
+    end
+end)
+end)
+
+anti:Button("Anti Fall", function()
+    Neverlose_Main:Notify({
+    Title = "selfmade",
+    Text = "Anti Fall Is Now On",
+    Time = 2 -- in seconds
+    })
+_G.antiFall = true -- Set it to true to enable anti-fall by default
+
+spawn(function()
+    game:GetService("Players").LocalPlayer.Character.Humanoid:GetPropertyChangedSignal('PlatformStand'):Connect(function()
+        if game:GetService("Players").LocalPlayer.Character.Humanoid.PlatformStand == true and not _G.antiFall == true then
+            return;
+        end
+        game:GetService("Players").LocalPlayer.Character.Humanoid.PlatformStand = false
+        game:GetService("Players").LocalPlayer.Character.Humanoid.AutoRotate = true
+    end)
+end)
+end)
+
+anti:Button("Anti Travel", function()
+    Neverlose_Main:Notify({
+    Title = "Selfmade",
+    Text = "Anti Travel Is Now On",
+    Time = 2 -- in seconds
+    })
+local bool = true -- Set 'bool' to 'true' to disable travel
+
+local mt = getrawmetatable(game)
+local namecall = mt.__namecall
+setreadonly(mt, false)
+mt.__namecall = function(self, ...)
+    local args = { ... }
+    local method = getnamecallmethod()
+
+    if tostring(self) == "shootingEvent" and method == "FireServer" and args[1] == "xd" then
+        if bool == false then
+            args[1] = "xd"
+            return self.FireServer(self, unpack(args))
+        elseif bool == true then
+            return
+        end
+    end
+    return namecall(self, ...)
+end
+end)
+
+_G.mag = true
+_G.magRange = 50 -- Set the default value to 50
+
+-- Function to get the closest player
+function getClosestPlayer()
+    local closestDistance = math.huge
+    local closestPlayer = nil
+    for i, player in ipairs(game:GetService("Players"):GetPlayers()) do
+        if player ~= game:GetService("Players").LocalPlayer then
+            local character = player.Character
+            if character then
+                local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+                if humanoidRootPart then
+                    local distance = (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - humanoidRootPart.Position).magnitude
+                    if distance < closestDistance then
+                        closestDistance = distance
+                        closestPlayer = player
+                    end
+                end
+            end
+        end
+    end
+    return closestPlayer
+end
+
+-- Slider code
+local HelloVar = mag:Slider("Ball Mags", 1, 25, 50, function(t)
+    _G.magRange = t
+end)
+HelloVar:Set(1) -- Set the default value to 75
+
+-- Main loop
+spawn(function()
+    while _G.mag == true do
+        wait(0.1) -- Run the script every 0.1 seconds instead of every frame
+        local closestPlayer = getClosestPlayer()
+        if closestPlayer then
+            local character = closestPlayer.Character
+            if character then
+                local basketball = character:FindFirstChild("Basketball")
+                if basketball then
+                    local ball = basketball:FindFirstChild("Ball")
+                    if ball and (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - ball.Position).magnitude <= _G.magRange then
+                        firetouchinterest(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart, ball, 0)
+                        wait(0.001)
+                        firetouchinterest(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart, ball, 1)
+                    end
+                end
+            end
+        end
+    end
+end)
+
+
+_G.ReachPlayer = true
+_G.ReachDistance = 50 -- Set the default value to 50
+
+-- Function to get the nearest part
+function getNearestPart(torso)
+    local dist, part = 9e9
+    for i, v in pairs(game:GetService("Players").LocalPlayer.Character:GetChildren()) do
+        if v:IsA("Part") and torso then
+            local mag = (v.Position - torso.Position).Magnitude
+            if dist > mag then
+                dist = mag
+                part = v
+            end
+        end
+    end
+    return part
+end
+
+-- Function to find the closest player with a basketball
+function findClosestPlayerWithBall()
+    local closestPlayerWithBasketball = nil
+    local closestDistance = math.huge
+    for i, v in pairs(game:GetService("Players"):GetChildren()) do
+        if v.Name ~= game:GetService("Players").LocalPlayer.Name and v.Character:FindFirstChildOfClass("Tool") then
+            local distance = (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position).magnitude
+            if distance < closestDistance then
+                closestDistance = distance
+                closestPlayerWithBasketball = v
+            end
+        end
+    end
+    return closestPlayerWithBasketball
+end
+
+-- Slider code
+local HelloVar = mag:Slider("Reach", 1, 35, 50, function(t)
+    _G.ReachDistance = t
+end)
+HelloVar:Set(1) -- Set the default value to 75
+
+-- Main loop
+spawn(function()
+    local RunService = game:GetService("RunService")
+    RunService.RenderStepped:Connect(function()
+        if _G.ReachPlayer and not game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool") and (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - findClosestPlayerWithBall().Character.HumanoidRootPart.Position).magnitude <= _G.ReachDistance then
+            firetouchinterest(getNearestPart(findClosestPlayerWithBall().Character.Torso), findClosestPlayerWithBall().Character.Basketball.Ball, 0)
+            firetouchinterest(getNearestPart(findClosestPlayerWithBall().Character.Torso), findClosestPlayerWithBall().Character.Basketball.Ball, 1)
+        end
+    end)
+end)
+
+local plr = game:GetService("Players").LocalPlayer
+local chr = plr.Character
+local Right = chr["Right Arm"]
+local Left = chr["Left Arm"]
+
+-- Function to update arm sizes
+local function updateArmSizes(size)
+    Left.Size = Vector3.new(size, Left.Size.Y, Left.Size.Z)
+    Right.Size = Vector3.new(size, Right.Size.Y, Right.Size.Z)
+end
+
+-- Slider code
+local HelloVar = mag:Slider("Long Arm", 1, 20, 50, function(t)
+    updateArmSizes(t)
+end)
+HelloVar:Set(1) -- Set the default value to 75
+
+-- Initial arm size update
+updateArmSizes(1)
+
+
+
+
+
+
