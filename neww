@@ -1,6 +1,7 @@
 
 local Players = game:GetService("Players")
 local StarterGui = game:GetService("StarterGui")
+local UserInputService = game:GetService("UserInputService")
 
 
 local screenGui = Instance.new("ScreenGui")
@@ -21,7 +22,7 @@ title.Size = UDim2.new(1, 0, 0, 50)
 title.Position = UDim2.new(0, 0, 0, 0)
 title.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
 title.BorderSizePixel = 0
-title.Text = "!!Attention!!"
+title.Text = "Attention"
 title.TextColor3 = Color3.new(1, 1, 1)
 title.TextScaled = true
 title.Parent = frame
@@ -31,7 +32,7 @@ local message = Instance.new("TextLabel")
 message.Size = UDim2.new(1, -20, 0, 200)
 message.Position = UDim2.new(0, 10, 0, 60)
 message.BackgroundTransparency = 1
-message.Text = "Hey, it's selfmade. I'm no longer working with fent as he scammed some people. I do not like or condone scamming. This being said, the script will be posted in my own server and I will try my best to get new games out like Rooftop 2 and then other games y'all wanna see."
+message.Text = "Hey, it's selfmade. I'm no longer working with fent as he scammed some people. I do not like or condone scamming. This being said, the script will be posted in my own server and I will try my best to get new games out like Rooftop 2 and then other games y'all see."
 message.TextColor3 = Color3.new(1, 1, 1)
 message.TextWrapped = true
 message.Parent = frame
@@ -78,3 +79,22 @@ end
 
 
 button.MouseButton1Click:Connect(joinDiscord)
+
+
+local inviteLink = Instance.new("TextLabel")
+inviteLink.Size = UDim2.new(1, -20, 0, 50)
+inviteLink.Position = UDim2.new(0, 10, 1, -10)
+inviteLink.BackgroundTransparency = 1
+inviteLink.Text = "If button doesn't work, here is the invite link: " .. discordInvite
+inviteLink.TextColor3 = Color3.new(1, 1, 1)
+inviteLink.TextWrapped = true
+inviteLink.Parent = frame
+
+
+if UserInputService:GetPlatform() == Enum.Platform.IOS or UserInputService:GetPlatform() == Enum.Platform.Android then
+    frame.Size = UDim2.new(1, -40, 0, 350)
+    frame.Position = UDim2.new(0.5, -200, 0.5, -175)
+    button.Size = UDim2.new(0, 300, 0, 50)
+    button.Position = UDim2.new(0.5, -150, 1, -110)
+    inviteLink.Position = UDim2.new(0, 10, 1, -50)
+end
