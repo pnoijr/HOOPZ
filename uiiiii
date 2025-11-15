@@ -985,7 +985,142 @@ function lib.CreateWindow(title)
 		end)
 	end
 	
-	return window
-end
+	function window:CreateKeybind(title, TabParent, defaultKey, callback)
+		local Keybind = Instance.new("ImageButton")
+		local UICorner = Instance.new("UICorner")
+		local Title = Instance.new("TextLabel")
+		local KeybindButton = Instance.new("TextButton")
+		local UICorner_2 = Instance.new("UICorner")
+		local UIGradient = Instance.new("UIGradient")
+		local UIStroke = Instance.new("UIStroke")
+		local UIGradient_2 = Instance.new("UIGradient")
 
-return lib
+		Keybind.Name = "Keybind"
+		Keybind.Parent = TabParent
+		Keybind.BackgroundColor3 = Color3.fromRGB(18, 18, 20)
+		Keybind.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		Keybind.BorderSizePixel = 0
+		Keybind.Position = UDim2.new(0.0734119266, 0, 0, 0)
+		Keybind.Size = UDim2.new(0, 472, 0, 40)
+		Keybind.ZIndex = 0
+		Keybind.AutoButtonColor = false
+
+		UICorner.Parent = Keybind
+
+		Title.Name = "Title"
+		Title.Parent = Keybind
+		Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		Title.BackgroundTransparency = 1.000
+		Title.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		Title.BorderSizePixel = 0
+		Title.Position = UDim2.new(0.0296610165, 0, 0, 0)
+		Title.Size = UDim2.new(0, 300, 0, 40)
+		Title.Font = Enum.Font.Gotham
+		Title.Text = title
+		Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+		Title.TextSize = 18.000
+		Title.TextXAlignment = Enum.TextXAlignment.Left
+
+		KeybindButton.Name = "KeybindButton"
+		KeybindButton.Parent = Keybind
+		KeybindButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+		KeybindButton.BackgroundTransparency = 0.400
+		KeybindButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		KeybindButton.BorderSizePixel = 0
+		KeybindButton.Position = UDim2.new(0.709745765, 0, 0.224999994, 0)
+		KeybindButton.Size = UDim2.new(0, 124, 0, 23)
+		KeybindButton.Font = Enum.Font.Gotham
+		KeybindButton.Text = defaultKey and defaultKey.Name or "None"
+		KeybindButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+		KeybindButton.TextSize = 16.000
+
+		UICorner_2.Parent = KeybindButton
+
+		UIGradient.Color = ColorSequence.new{
+			ColorSequenceKeypoint.new(0.00, Color3.fromRGB(213, 73, 171)), 
+			ColorSequenceKeypoint.new(1.00, Color3.fromRGB(30, 135, 128))
+		}
+		UIGradient.Rotation = 158
+		UIGradient.Parent = KeybindButton
+
+		UIStroke.Parent = Keybind
+		UIStroke.Color = Color3.fromRGB(255, 255, 255)
+		UIStroke.Transparency = 1.000
+
+		UIGradient_2.Color = ColorSequence.new{
+			ColorSequenceKeypoint.new(0.00, Color3.fromRGB(213, 73, 171)), 
+			ColorSequenceKeypoint.new(1.00, Color3.fromRGB(30, 135, 128))
+		}
+		UIGradient_2.Parent = UIStroke
+
+		local UIS = game:GetService("UserInputService")
+		local currentKey = defaultKey
+		local isBinding = false
+		local boundConnection = nil
+
+		local function GetReadableName(keyCode)
+			local controllerNames = {
+				[Enum.KeyCode.ButtonA] = "A",
+				[Enum.KeyCode.ButtonB] = "B",
+				[Enum.KeyCode.ButtonX] = "X",
+				[Enum.KeyCode.ButtonY] = "Y",
+				[Enum.KeyCode.ButtonL1] = "LB",
+				[Enum.KeyCode.ButtonR1] = "RB",
+				[Enum.KeyCode.ButtonL2] = "LT",
+				[Enum.KeyCode.ButtonR2] = "RT",
+				[Enum.KeyCode.ButtonL3] = "L3",
+				[Enum.KeyCode.ButtonR3] = "R3",
+				[Enum.KeyCode.DPadLeft] = "D-Left",
+				[Enum.KeyCode.DPadRight] = "D-Right",
+				[Enum.KeyCode.DPadUp] = "D-Up",
+				[Enum.KeyCode.DPadDown] = "D-Down",
+				[Enum.KeyCode.ButtonStart] = "Start",
+				[Enum.KeyCode.ButtonSelect] = "Select",
+			}
+			
+			return controllerNames[keyCode] or keyCode.Name
+		end
+
+		local function IsValidKey(keyCode)
+			local invalidKeys = {
+				Enum.KeyCode.Unknown,
+				Enum.KeyCode.W,
+				Enum.KeyCode.A,
+				Enum.KeyCode.S,
+				Enum.KeyCode.D,
+				Enum.KeyCode.Space,
+				Enum.KeyCode.LeftShift,
+			}
+			
+			for _, invalid in ipairs(invalidKeys) do
+				if keyCode == invalid then
+					return false
+				end
+			end
+			
+			return true
+		end
+
+		local function StartBinding()
+			isBinding = true
+			KeybindButton.Text = "..."
+			
+			game:GetService("TweenService"):Create(
+				UIStroke, 
+				TweenInfo.new(0.3), 
+				{Transparency = 0}
+			):Play()
+			
+			game:GetService("TweenService"):Create(
+				KeybindButton, 
+				TweenInfo.new(0.3), 
+				{BackgroundTransparency = 0.2}
+			):Play()
+		end
+
+		local function EndBinding(newKey)
+			isBinding = false
+			
+			if newKey and IsValidKey(newKey) then
+				currentKey = newKey
+				KeybindButton.Text
